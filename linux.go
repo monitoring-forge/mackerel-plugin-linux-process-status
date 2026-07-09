@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -147,7 +148,12 @@ func (opt *Opt) cpuStat(p procfs.Proc, now uint64) error {
 	if err != nil {
 		curUser = &user.User{Uid: "unknown"}
 	}
-	prevPath := filepath.Join(workDir, fmt.Sprintf("%s-process-status-v2-%s-%d", curUser.Uid, opt.KeyPrefix, p.PID))
+	executable, err := os.Executable()
+	if err != nil || executable == "" {
+		executable = "unknown"
+	}
+	executable = url.QueryEscape(filepath.Base(executable))
+	prevPath := filepath.Join(workDir, fmt.Sprintf("%s-process-status-v2-%s-%s", curUser.Uid, opt.KeyPrefix, executable))
 
 	if !fileExists(prevPath) {
 		err = writeStats(prevPath, ps)
