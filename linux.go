@@ -88,7 +88,11 @@ func (opt *Opt) fdsStat(p procfs.Proc, now uint64) error {
 
 	fmt.Printf("process-status.fds_%s.count\t%d\t%d\n", opt.KeyPrefix, fds, now)
 	fmt.Printf("process-status.fds_%s.max\t%d\t%d\n", opt.KeyPrefix, limit.OpenFiles, now)
-	fmt.Printf("process-status.fds_usage_%s.percentage\t%f\t%d\n", opt.KeyPrefix, float64(fds)*100/float64(limit.OpenFiles), now)
+	usage := 0.0
+	if limit.OpenFiles > 0 {
+		usage = float64(fds) * 100 / float64(limit.OpenFiles)
+	}
+	fmt.Printf("process-status.fds_usage_%s.percentage\t%f\t%d\n", opt.KeyPrefix, usage, now)
 
 	return nil
 }
@@ -96,7 +100,7 @@ func (opt *Opt) fdsStat(p procfs.Proc, now uint64) error {
 func (opt *Opt) memStat(p procfs.Proc, now uint64) error {
 	pss, err := p.Stat()
 	if err != nil {
-		return errors.Wrap(err, "Could not get NewStat")
+		return errors.Wrap(err, "Could not get process stat")
 	}
 	used := pss.ResidentMemory()
 
@@ -106,7 +110,7 @@ func (opt *Opt) memStat(p procfs.Proc, now uint64) error {
 	}
 	ms, err := fs.Meminfo()
 	if err != nil {
-		return errors.Wrap(err, "Could not get getMemStat")
+		return errors.Wrap(err, "Could not get meminfo")
 	}
 	// XXX use MemTotal as max memory. not concern cgroup
 	memTotal := ms.MemTotal
