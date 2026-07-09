@@ -1,5 +1,5 @@
 VERSION=0.0.8
-GITCOMMIT?=$(shell git describe --dirty --always)
+GITCOMMIT?=$(shell git describe --dirty --always 2>/dev/null)
 LDFLAGS=-ldflags "-w -s -X main.version=${VERSION} -X main.commit=${GITCOMMIT}"
 all: mackerel-plugin-linux-process-status
 
