@@ -106,7 +106,7 @@ func (opt *Opt) memStat(p procfs.Proc, now uint64) error {
 
 	fs, err := procfs.NewDefaultFS()
 	if err != nil {
-		return errors.Wrap(err, "Could not get NewDefaultFS")
+		return errors.Wrap(err, "Could not get procfs")
 	}
 	ms, err := fs.Meminfo()
 	if err != nil {
