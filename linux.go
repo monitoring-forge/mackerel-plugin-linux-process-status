@@ -114,6 +114,9 @@ func (opt *Opt) memStat(p procfs.Proc, now uint64) error {
 	}
 	// XXX use MemTotal as max memory. not concern cgroup
 	memTotal := ms.MemTotal
+	if memTotal == nil {
+		return errors.New("Could not get MemTotal")
+	}
 	max := *memTotal * 1024
 
 	fmt.Printf("process-status.mem_%s.used\t%d\t%d\n", opt.KeyPrefix, used, now)
@@ -140,7 +143,10 @@ func (opt *Opt) cpuStat(p procfs.Proc, now uint64) error {
 	}
 
 	workDir := pluginutil.PluginWorkDir()
-	curUser, _ := user.Current()
+	curUser, err := user.Current()
+	if err != nil {
+		curUser = &user.User{Uid: "unknown"}
+	}
 	prevPath := filepath.Join(workDir, fmt.Sprintf("%s-process-status-v2-%s-%d", curUser.Uid, opt.KeyPrefix, p.PID))
 
 	if !fileExists(prevPath) {
