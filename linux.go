@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -11,14 +10,15 @@ import (
 	"time"
 
 	flags "github.com/jessevdk/go-flags"
+	"github.com/mackerelio/golib/pluginutil"
 	"github.com/pkg/errors"
 	"github.com/prometheus/procfs"
 )
 
-// version by Makefile
 var version string
+var commit string
 
-type cmdOpts struct {
+type Opt struct {
 	Pid       int    `short:"p" long:"pid" description:"PID" required:"true"`
 	KeyPrefix string `long:"key-prefix" description:"Metric key prefix" required:"true"`
 	Version   bool   `short:"v" long:"version" description:"Show version"`
@@ -51,7 +51,7 @@ func writeStats(filename string, ps processStats) error {
 
 func readStats(filename string) (processStats, error) {
 	ps := processStats{}
-	d, err := ioutil.ReadFile(filename)
+	d, err := os.ReadFile(filename)
 	if err != nil {
 		return ps, err
 	}
@@ -64,33 +64,37 @@ func readStats(filename string) (processStats, error) {
 
 func cpuJiffer() (float64, error) {
 	// read /proc/stat
-	cpu, err := procfs.NewStat()
+	fs, err := procfs.NewDefaultFS()
+	if err != nil {
+		return 0, err
+	}
+	cpu, err := fs.Stat()
 	if err != nil {
 		return 0, err
 	}
 	return (cpu.CPUTotal.User + cpu.CPUTotal.Nice + cpu.CPUTotal.System + cpu.CPUTotal.Idle), nil
 }
 
-func getFdsStat(p procfs.Proc, key string, now uint64) error {
+func (opt *Opt) fdsStat(p procfs.Proc, now uint64) error {
 	fds, err := p.FileDescriptorsLen()
 	if err != nil {
 		return errors.Wrap(err, "Could not get fds")
 	}
 
-	limit, err := p.NewLimits()
+	limit, err := p.Limits()
 	if err != nil {
 		return errors.Wrap(err, "Could not get limits")
 	}
 
-	fmt.Printf("process-status.fds_%s.count\t%d\t%d\n", key, fds, now)
-	fmt.Printf("process-status.fds_%s.max\t%d\t%d\n", key, limit.OpenFiles, now)
-	fmt.Printf("process-status.fds_usage_%s.percentage\t%f\t%d\n", key, float64(fds)*100/float64(limit.OpenFiles), now)
+	fmt.Printf("process-status.fds_%s.count\t%d\t%d\n", opt.KeyPrefix, fds, now)
+	fmt.Printf("process-status.fds_%s.max\t%d\t%d\n", opt.KeyPrefix, limit.OpenFiles, now)
+	fmt.Printf("process-status.fds_usage_%s.percentage\t%f\t%d\n", opt.KeyPrefix, float64(fds)*100/float64(limit.OpenFiles), now)
 
 	return nil
 }
 
-func getMemStat(p procfs.Proc, key string, now uint64) error {
-	pss, err := p.NewStat()
+func (opt *Opt) memStat(p procfs.Proc, now uint64) error {
+	pss, err := p.Stat()
 	if err != nil {
 		return errors.Wrap(err, "Could not get NewStat")
 	}
@@ -105,17 +109,17 @@ func getMemStat(p procfs.Proc, key string, now uint64) error {
 		return errors.Wrap(err, "Could not get getMemStat")
 	}
 	// XXX use MemTotal as max memory. not concern cgroup
-	max := ms.MemTotal
-	max = max * 1024
+	memTotal := ms.MemTotal
+	max := *memTotal * 1024
 
-	fmt.Printf("process-status.mem_%s.used\t%d\t%d\n", key, used, now)
-	fmt.Printf("process-status.mem_%s.max\t%d\t%d\n", key, max, now)
-	fmt.Printf("process-status.mem_usage_%s.percentage\t%f\t%d\n", key, float64(used)*100/float64(max), now)
+	fmt.Printf("process-status.mem_%s.used\t%d\t%d\n", opt.KeyPrefix, used, now)
+	fmt.Printf("process-status.mem_%s.max\t%d\t%d\n", opt.KeyPrefix, max, now)
+	fmt.Printf("process-status.mem_usage_%s.percentage\t%f\t%d\n", opt.KeyPrefix, float64(used)*100/float64(max), now)
 	return nil
 }
 
-func getCPUStat(p procfs.Proc, key string, now uint64) error {
-	pss, err := p.NewStat()
+func (opt *Opt) cpuStat(p procfs.Proc, now uint64) error {
+	pss, err := p.Stat()
 	if err != nil {
 		return errors.Wrap(err, "Could not get process stat")
 	}
@@ -131,9 +135,9 @@ func getCPUStat(p procfs.Proc, key string, now uint64) error {
 		CPU:    pss.CPUTime(),
 	}
 
-	tmpDir := os.TempDir()
+	workDir := pluginutil.PluginWorkDir()
 	curUser, _ := user.Current()
-	prevPath := filepath.Join(tmpDir, fmt.Sprintf("%s-process-status-v2-%s-%d", curUser.Uid, key, p.PID))
+	prevPath := filepath.Join(workDir, fmt.Sprintf("%s-process-status-v2-%s-%d", curUser.Uid, opt.KeyPrefix, p.PID))
 
 	if !fileExists(prevPath) {
 		err = writeStats(prevPath, ps)
@@ -150,7 +154,7 @@ func getCPUStat(p procfs.Proc, key string, now uint64) error {
 	}
 
 	us := (float64(ps.CPU-prev.CPU) / float64(ps.SysCPU-prev.SysCPU)) * 100
-	fmt.Printf("process-status.cpu_%s.percentage\t%f\t%d\n", key, us, now)
+	fmt.Printf("process-status.cpu_%s.percentage\t%f\t%d\n", opt.KeyPrefix, us, now)
 	err = writeStats(prevPath, ps)
 	if err != nil {
 		return errors.Wrap(err, "failed to save stats")
@@ -159,26 +163,26 @@ func getCPUStat(p procfs.Proc, key string, now uint64) error {
 	return nil
 }
 
-func getStats(opts cmdOpts) error {
+func (opt *Opt) run() error {
 
 	now := uint64(time.Now().Unix())
 
-	p, err := procfs.NewProc(opts.Pid)
+	proc, err := procfs.NewProc(opt.Pid)
 	if err != nil {
 		return errors.Wrap(err, "failed to fetch proc")
 	}
 
-	err = getFdsStat(p, opts.KeyPrefix, now)
+	err = opt.fdsStat(proc, now)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Notice: %v\n", err)
 	}
 
-	err = getCPUStat(p, opts.KeyPrefix, now)
+	err = opt.cpuStat(proc, now)
 	if err != nil {
 		return err
 	}
 
-	err = getMemStat(p, opts.KeyPrefix, now)
+	err = opt.memStat(proc, now)
 	if err != nil {
 		return err
 	}
@@ -191,17 +195,22 @@ func main() {
 }
 
 func _main() int {
-	opts := cmdOpts{}
-	psr := flags.NewParser(&opts, flags.HelpFlag|flags.PassDoubleDash)
+	opt := &Opt{}
+	psr := flags.NewParser(opt, flags.HelpFlag|flags.PassDoubleDash)
 	_, err := psr.Parse()
-	if opts.Version {
-		fmt.Printf(`%s %s
-Compiler: %s %s
-`,
-			os.Args[0],
+
+	if opt.Version {
+		if commit == "" {
+			commit = "dev"
+		}
+		fmt.Printf(
+			"%s-%s\n%s/%s, %s, %s\n",
+			filepath.Base(os.Args[0]),
 			version,
-			runtime.Compiler,
-			runtime.Version())
+			runtime.GOOS,
+			runtime.GOARCH,
+			runtime.Version(),
+			commit)
 		return 0
 	}
 	if err != nil {
@@ -209,7 +218,7 @@ Compiler: %s %s
 		return 1
 	}
 
-	err = getStats(opts)
+	err = opt.run()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return 1
