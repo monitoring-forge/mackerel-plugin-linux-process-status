@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.10](https://github.com/kazeburo/mackerel-plugin-linux-process-status/compare/v0.0.9...v0.0.10) - 2026-07-09
+
+- use executable for prev data path by @kazeburo in https://github.com/kazeburo/mackerel-plugin-linux-process-status/pull/8
+
 ## [v0.0.9](https://github.com/kazeburo/mackerel-plugin-linux-process-status/compare/v0.0.8...v0.0.9) - 2026-07-09
 
 - Release tagpr package by @kazeburo in https://github.com/kazeburo/mackerel-plugin-linux-process-status/pull/5
