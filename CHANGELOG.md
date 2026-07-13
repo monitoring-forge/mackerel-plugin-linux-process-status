@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.0.11](https://github.com/kazeburo/mackerel-plugin-linux-process-status/compare/v0.0.10...v0.0.11) - 2026-07-13
+
+- update dependabot.yml by @kazeburo in https://github.com/kazeburo/mackerel-plugin-linux-process-status/pull/10
+- log counter reset by @kazeburo in https://github.com/kazeburo/mackerel-plugin-linux-process-status/pull/12
+
 ## [v0.0.10](https://github.com/kazeburo/mackerel-plugin-linux-process-status/compare/v0.0.9...v0.0.10) - 2026-07-09
 
 - use executable for prev data path by @kazeburo in https://github.com/kazeburo/mackerel-plugin-linux-process-status/pull/8
