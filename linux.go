@@ -171,14 +171,14 @@ func (opt *Opt) cpuStat(p procfs.Proc, now uint64) error {
 		return errors.Wrap(err, "failed to load stats")
 	}
 
-	if ps.SysCPU-prev.SysCPU <= 0 {
-		fmt.Fprintf(os.Stderr, "Notice: System CPU counter seems to be reset\n")
+	if ps.SysCPU-prev.SysCPU == 0 {
+		fmt.Fprintf(os.Stderr, "Notice: System CPU counter seems to be unchanged\n")
 		return nil
 	}
 
 	us := (float64(ps.CPU-prev.CPU) / float64(ps.SysCPU-prev.SysCPU)) * 100
 	if us < 0 {
-		fmt.Fprintf(os.Stderr, "Notice: Process CPU counter seems to be reset\n")
+		fmt.Fprintf(os.Stderr, "Notice: Process or System CPU counter seems to be reset\n")
 		return nil
 	}
 
