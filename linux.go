@@ -155,11 +155,13 @@ func (opt *Opt) cpuStat(p procfs.Proc, now uint64) error {
 	executable = url.QueryEscape(filepath.Base(executable))
 	prevPath := filepath.Join(workDir, fmt.Sprintf("%s-process-status-v2-%s-%s", curUser.Uid, opt.KeyPrefix, executable))
 
-	if !fileExists(prevPath) {
-		err = writeStats(prevPath, ps)
-		if err != nil {
-			return errors.Wrap(err, "failed to save stats")
+	defer func() {
+		if writeErr := writeStats(prevPath, ps); writeErr != nil {
+			fmt.Fprintf(os.Stderr, "Error: failed to save stats to %s: %v\n", prevPath, writeErr)
 		}
+	}()
+
+	if !fileExists(prevPath) {
 		fmt.Fprintf(os.Stderr, "Notice: first time execution command\n")
 		return nil
 	}
@@ -169,12 +171,18 @@ func (opt *Opt) cpuStat(p procfs.Proc, now uint64) error {
 		return errors.Wrap(err, "failed to load stats")
 	}
 
-	us := (float64(ps.CPU-prev.CPU) / float64(ps.SysCPU-prev.SysCPU)) * 100
-	fmt.Printf("process-status.cpu_%s.percentage\t%f\t%d\n", opt.KeyPrefix, us, now)
-	err = writeStats(prevPath, ps)
-	if err != nil {
-		return errors.Wrap(err, "failed to save stats")
+	if ps.SysCPU-prev.SysCPU == 0 {
+		fmt.Fprintf(os.Stderr, "Notice: System CPU counter seems to be unchanged\n")
+		return nil
 	}
+
+	us := (float64(ps.CPU-prev.CPU) / float64(ps.SysCPU-prev.SysCPU)) * 100
+	if us < 0 {
+		fmt.Fprintf(os.Stderr, "Notice: Process or System CPU counter seems to be reset\n")
+		return nil
+	}
+
+	fmt.Printf("process-status.cpu_%s.percentage\t%f\t%d\n", opt.KeyPrefix, us, now)
 
 	return nil
 }
