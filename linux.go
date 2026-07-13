@@ -156,9 +156,8 @@ func (opt *Opt) cpuStat(p procfs.Proc, now uint64) error {
 	prevPath := filepath.Join(workDir, fmt.Sprintf("%s-process-status-v2-%s-%s", curUser.Uid, opt.KeyPrefix, executable))
 
 	defer func() {
-		err = writeStats(prevPath, ps)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: failed to save stats: %v\n", err)
+		if writeErr := writeStats(prevPath, ps); writeErr != nil {
+			fmt.Fprintf(os.Stderr, "Error: failed to save stats: %v\n", writeErr)
 		}
 	}()
 
@@ -172,9 +171,14 @@ func (opt *Opt) cpuStat(p procfs.Proc, now uint64) error {
 		return errors.Wrap(err, "failed to load stats")
 	}
 
+	if ps.SysCPU-prev.SysCPU <= 0 {
+		fmt.Fprintf(os.Stderr, "Notice: System CPU counter seems to be reset\n")
+		return nil
+	}
+
 	us := (float64(ps.CPU-prev.CPU) / float64(ps.SysCPU-prev.SysCPU)) * 100
 	if us < 0 {
-		fmt.Fprintf(os.Stderr, "Notice: Counter seems to be reset\n")
+		fmt.Fprintf(os.Stderr, "Notice: Process CPU counter seems to be reset\n")
 		return nil
 	}
 
