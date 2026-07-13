@@ -157,7 +157,7 @@ func (opt *Opt) cpuStat(p procfs.Proc, now uint64) error {
 
 	defer func() {
 		if writeErr := writeStats(prevPath, ps); writeErr != nil {
-			fmt.Fprintf(os.Stderr, "Error: failed to save stats: %v\n", writeErr)
+			fmt.Fprintf(os.Stderr, "Error: failed to save stats to %s: %v\n", prevPath, writeErr)
 		}
 	}()
 
