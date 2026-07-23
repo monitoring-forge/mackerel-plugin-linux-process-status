@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.0.12](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.11...v0.0.12) - 2026-07-23
+
+- ci: bump the dependencies group with 2 updates by @dependabot[bot] in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/13
+- improve tests and safety by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/14
+
 ## [v0.0.11](https://github.com/kazeburo/mackerel-plugin-linux-process-status/compare/v0.0.10...v0.0.11) - 2026-07-13
 
 - update dependabot.yml by @kazeburo in https://github.com/kazeburo/mackerel-plugin-linux-process-status/pull/10
