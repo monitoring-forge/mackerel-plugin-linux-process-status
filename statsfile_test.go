@@ -164,7 +164,7 @@ func TestWriteStatsOverwrite(t *testing.T) {
 	}
 }
 
-func TestWriteStatsTempFileCleanupOnError(t *testing.T) {
+func TestWriteStatsNoTempFileLeftOnSuccess(t *testing.T) {
 	dir := t.TempDir()
 
 	// Ensure no leftover temp files

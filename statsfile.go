@@ -12,7 +12,7 @@ func fileExists(dir, filename string) bool {
 }
 
 func writeStats(dir, filename string, ps *processStats) error {
-	newFile, err := os.CreateTemp(dir, "process-status")
+	newFile, err := os.CreateTemp(dir, "process-status-")
 	if err != nil {
 		return err
 	}
