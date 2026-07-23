@@ -31,6 +31,9 @@ process-status.mem_test.max     469286912       1606457504
 process-status.mem_usage_test.percentage        0.623189        1606457504
 ```
 
+## Limitaion
+
+This plugin does not monitor I/O wait time or CPU steal time.
 
 ## Install
 

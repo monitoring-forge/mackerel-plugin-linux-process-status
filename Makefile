@@ -5,10 +5,10 @@ all: mackerel-plugin-linux-process-status
 
 .PHONY: mackerel-plugin-linux-process-status
 
-mackerel-plugin-linux-process-status: linux.go
+mackerel-plugin-linux-process-status: main.go
 	go build $(LDFLAGS) -o mackerel-plugin-linux-process-status
 
-linux: linux.go
+linux: main.go
 	GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o mackerel-plugin-linux-process-status
 
 check:
