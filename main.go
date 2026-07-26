@@ -18,6 +18,11 @@ import (
 var version string
 var commit string
 
+const UNKNOWN = 3
+const CRITICAL = 2
+const WARNING = 1
+const OK = 0
+
 type Opt struct {
 	Pid       int    `short:"p" long:"pid" description:"PID" required:"true"`
 	KeyPrefix string `long:"key-prefix" description:"Metric key prefix" required:"true"`
@@ -215,17 +220,22 @@ func _main() int {
 			runtime.GOARCH,
 			runtime.Version(),
 			commit)
-		return 0
+		return OK
+	}
+	// flags.PrintErrors is not set, so we need to display help and errors manually
+	if err != nil && flags.WroteHelp(err) {
+		fmt.Fprintf(os.Stdout, "%v\n", err)
+		return OK
 	}
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
-		return 1
+		return UNKNOWN
 	}
 
 	err = opt.run()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
-		return 1
+		return CRITICAL
 	}
-	return 0
+	return OK
 }
