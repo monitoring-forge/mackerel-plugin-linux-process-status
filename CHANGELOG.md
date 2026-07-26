@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.13](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.12...v0.0.13) - 2026-07-26
+
+- Remove make clean and fix Help exit code with constant by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/16
+
 ## [v0.0.12](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.11...v0.0.12) - 2026-07-23
 
 - ci: bump the dependencies group with 2 updates by @dependabot[bot] in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/13
