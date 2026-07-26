@@ -12,8 +12,5 @@ linux: main.go open_unix.go open_windows.go statsfile.go
 	GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o mackerel-plugin-linux-process-status
 
 check:
-	go test ./...
-
-clean:
-	rm -rf mackerel-plugin-linux-process-status
+	go test -v ./...
 
