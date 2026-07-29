@@ -18,10 +18,12 @@ import (
 var version string
 var commit string
 
-const UNKNOWN = 3
-const CRITICAL = 2
-const WARNING = 1
-const OK = 0
+const (
+	OK = iota
+	WARNING
+	CRITICAL
+	UNKNOWN
+)
 
 type Opt struct {
 	Pid       int    `short:"p" long:"pid" description:"PID" required:"true"`
@@ -207,7 +209,6 @@ func _main() int {
 	opt := &Opt{}
 	psr := flags.NewParser(opt, flags.HelpFlag|flags.PassDoubleDash)
 	_, err := psr.Parse()
-
 	if opt.Version {
 		if commit == "" {
 			commit = "dev"
@@ -221,13 +222,10 @@ func _main() int {
 			runtime.Version(),
 			commit)
 		return OK
-	}
-	// flags.PrintErrors is not set, so we need to display help and errors manually
-	if err != nil && flags.WroteHelp(err) {
+	} else if flags.WroteHelp(err) {
 		fmt.Fprintf(os.Stdout, "%v\n", err)
 		return OK
-	}
-	if err != nil {
+	} else if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return UNKNOWN
 	}
