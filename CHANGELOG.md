@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.14](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.13...v0.0.14) - 2026-07-29
+
+- pr-agent and flags refactor by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/18
+
 ## [v0.0.13](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.12...v0.0.13) - 2026-07-26
 
 - Remove make clean and fix Help exit code with constant by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/16
