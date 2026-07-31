@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.0.15](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.14...v0.0.15) - 2026-07-31
+
+- add lint and fix by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/21
+- ci: bump actions/checkout from 7.0.0 to 7.0.1 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/20
+
 ## [v0.0.14](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.13...v0.0.14) - 2026-07-29
 
 - pr-agent and flags refactor by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/18
