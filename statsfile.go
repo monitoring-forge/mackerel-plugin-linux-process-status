@@ -23,7 +23,7 @@ func writeStats(dir, filename string, ps *processStats) error {
 	if err != nil {
 		newFile.Close()
 		errRemove := os.Remove(newFile.Name())
-		if errRemove != nil {
+		if errRemove != nil && !os.IsNotExist(errRemove) {
 			log.Printf("Failed to remove temporary file: %s, error: %v", newFile.Name(), errRemove)
 		}
 		return err
@@ -32,7 +32,7 @@ func writeStats(dir, filename string, ps *processStats) error {
 	err = newFile.Close()
 	if err != nil {
 		errRemove := os.Remove(newFile.Name())
-		if errRemove != nil {
+		if errRemove != nil && !os.IsNotExist(errRemove) {
 			log.Printf("Failed to remove temporary file: %s, error: %v", newFile.Name(), errRemove)
 		}
 		return err
