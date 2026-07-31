@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -21,13 +22,19 @@ func writeStats(dir, filename string, ps *processStats) error {
 	err = je.Encode(ps)
 	if err != nil {
 		newFile.Close()
-		os.Remove(newFile.Name())
+		errRemove := os.Remove(newFile.Name())
+		if errRemove != nil {
+			log.Printf("Failed to remove temporary file: %s, error: %v", newFile.Name(), errRemove)
+		}
 		return err
 	}
 
 	err = newFile.Close()
 	if err != nil {
-		os.Remove(newFile.Name())
+		errRemove := os.Remove(newFile.Name())
+		if errRemove != nil {
+			log.Printf("Failed to remove temporary file: %s, error: %v", newFile.Name(), errRemove)
+		}
 		return err
 	}
 

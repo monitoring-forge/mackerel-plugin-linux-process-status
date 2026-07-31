@@ -11,7 +11,7 @@ import (
 
 // containsLine checks if a string contains a line with the given substring
 func containsLine(s, substr string) bool {
-	for _, line := range strings.Split(s, "\n") {
+	for line := range strings.SplitSeq(s, "\n") {
 		if strings.Contains(line, substr) {
 			return true
 		}
