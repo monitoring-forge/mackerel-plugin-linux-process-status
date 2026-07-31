@@ -17,24 +17,22 @@ func writeStats(dir, filename string, ps *processStats) error {
 	if err != nil {
 		return err
 	}
+	defer func() {
+		errRemove := os.Remove(newFile.Name())
+		if errRemove != nil && !os.IsNotExist(errRemove) {
+			log.Printf("Failed to remove temporary file: %s, error: %v", newFile.Name(), errRemove)
+		}
+	}()
 
 	je := json.NewEncoder(newFile)
 	err = je.Encode(ps)
 	if err != nil {
 		newFile.Close()
-		errRemove := os.Remove(newFile.Name())
-		if errRemove != nil && !os.IsNotExist(errRemove) {
-			log.Printf("Failed to remove temporary file: %s, error: %v", newFile.Name(), errRemove)
-		}
 		return err
 	}
 
 	err = newFile.Close()
 	if err != nil {
-		errRemove := os.Remove(newFile.Name())
-		if errRemove != nil && !os.IsNotExist(errRemove) {
-			log.Printf("Failed to remove temporary file: %s, error: %v", newFile.Name(), errRemove)
-		}
 		return err
 	}
 
