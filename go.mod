@@ -10,5 +10,6 @@ require (
 
 require (
 	github.com/mackerelio/golib v1.2.2
+	github.com/monitoring-forge/saferio v0.0.2
 	golang.org/x/sys v0.47.0 // indirect
 )

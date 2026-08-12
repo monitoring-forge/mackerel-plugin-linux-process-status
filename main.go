@@ -11,6 +11,7 @@ import (
 
 	flags "github.com/jessevdk/go-flags"
 	"github.com/mackerelio/golib/pluginutil"
+	"github.com/monitoring-forge/saferio"
 	"github.com/pkg/errors"
 	"github.com/prometheus/procfs"
 )
@@ -141,17 +142,18 @@ func cpuStatAt(p procfs.Proc, opt *Opt, now uint64, workDir string, root string)
 	stateFile := fmt.Sprintf("%d-process-status-v2-%s-%s", curUID, opt.KeyPrefix, executable)
 
 	defer func() {
-		if writeErr := writeStats(workDir, stateFile, ps); writeErr != nil {
+		if writeErr := saferio.WriteJSON(workDir, stateFile, ps); writeErr != nil {
 			fmt.Fprintf(os.Stderr, "Error: failed to save stats to %s: %v\n", stateFile, writeErr)
 		}
 	}()
 
-	if !fileExists(workDir, stateFile) {
+	if !saferio.FileExists(workDir, stateFile) {
 		fmt.Fprintf(os.Stderr, "Notice: first time execution command\n")
 		return "", nil
 	}
 
-	prev, err := readStats(workDir, stateFile)
+	prev := &processStats{}
+	err = saferio.ReadJSON(workDir, stateFile, prev)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to load stats")
 	}
