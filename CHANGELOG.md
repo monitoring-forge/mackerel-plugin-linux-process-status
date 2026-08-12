@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.0.16](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.15...v0.0.16) - 2026-08-12
+
+- Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/23
+- Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/25
+
 ## [v0.0.15](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.14...v0.0.15) - 2026-07-31
 
 - add lint and fix by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/21
