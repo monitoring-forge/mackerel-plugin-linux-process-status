@@ -37,4 +37,4 @@ This plugin does not monitor I/O wait time or CPU steal time.
 
 ## Install
 
-Please download release page or `mkr plugin install kazeburo/mackerel-plugin-linux-process-status`.
+Please download release page or `mkr plugin install monitoring-forge/mackerel-plugin-linux-process-status`.
