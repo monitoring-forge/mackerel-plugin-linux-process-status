@@ -1,4 +1,4 @@
-module github.com/kazeburo/mackerel-plugin-linux-process-status
+module github.com/monitoring-forge/mackerel-plugin-linux-process-status
 
 go 1.25.0
 
