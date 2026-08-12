@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.0.18](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.17...v0.0.18) - 2026-08-12
+
+- update README.md by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/28
+- Use safaerio by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/30
+
 ## [v0.0.17](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.16...v0.0.17) - 2026-08-12
 
 - repository transfer by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/26
