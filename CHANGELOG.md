@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.17](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.16...v0.0.17) - 2026-08-12
+
+- repository transfer by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/26
+
 ## [v0.0.16](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.15...v0.0.16) - 2026-08-12
 
 - Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/23
