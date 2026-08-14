@@ -6,11 +6,10 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"runtime"
 	"time"
 
-	flags "github.com/jessevdk/go-flags"
 	"github.com/mackerelio/golib/pluginutil"
+	"github.com/monitoring-forge/flagrun"
 	"github.com/monitoring-forge/saferio"
 	"github.com/pkg/errors"
 	"github.com/prometheus/procfs"
@@ -18,13 +17,6 @@ import (
 
 var version string
 var commit string
-
-const (
-	OK = iota
-	WARNING
-	CRITICAL
-	UNKNOWN
-)
 
 type Opt struct {
 	Pid       int    `short:"p" long:"pid" description:"PID" required:"true"`
@@ -172,13 +164,13 @@ func cpuStatAt(p procfs.Proc, opt *Opt, now uint64, workDir string, root string)
 	return fmt.Sprintf("process-status.cpu_%s.percentage\t%f\t%d\n", opt.KeyPrefix, us, now), nil
 }
 
-func (opt *Opt) run() error {
+func (opt *Opt) Run(_ []string) (string, int) {
 
 	now := uint64(time.Now().Unix())
 
 	proc, err := procfs.NewProc(opt.Pid)
 	if err != nil {
-		return errors.Wrap(err, "failed to fetch proc")
+		return fmt.Sprintf("failed to fetch proc: %v", err), flagrun.CRITICAL
 	}
 
 	msg, err := opt.fdsStat(proc, now)
@@ -190,52 +182,19 @@ func (opt *Opt) run() error {
 	workDir := pluginutil.PluginWorkDir()
 	msg, err = opt.cpuStat(proc, workDir, now)
 	if err != nil {
-		return errors.Wrap(err, "failed to get cpu stat")
+		return fmt.Sprintf("failed to get cpu stat: %v", err), flagrun.CRITICAL
 	}
 	fmt.Print(msg)
 
 	msg, err = opt.memStat(proc, now)
 	if err != nil {
-		return err
+		return fmt.Sprintf("failed to get memory stat: %v", err), flagrun.CRITICAL
 	}
-	fmt.Print(msg)
 
-	return nil
+	return msg, flagrun.OK
 }
 
 func main() {
-	os.Exit(_main())
-}
-
-func _main() int {
 	opt := &Opt{}
-	psr := flags.NewParser(opt, flags.HelpFlag|flags.PassDoubleDash)
-	_, err := psr.Parse()
-	if opt.Version {
-		if commit == "" {
-			commit = "dev"
-		}
-		fmt.Printf(
-			"%s-%s\n%s/%s, %s, %s\n",
-			filepath.Base(os.Args[0]),
-			version,
-			runtime.GOOS,
-			runtime.GOARCH,
-			runtime.Version(),
-			commit)
-		return OK
-	} else if flags.WroteHelp(err) {
-		fmt.Fprintf(os.Stdout, "%v\n", err)
-		return OK
-	} else if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		return UNKNOWN
-	}
-
-	err = opt.run()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		return CRITICAL
-	}
-	return OK
+	os.Exit(flagrun.Go(opt, flagrun.Version(version), flagrun.Commit(commit)))
 }
