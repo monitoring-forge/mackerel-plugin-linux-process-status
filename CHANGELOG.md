@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.19](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.18...v0.0.19) - 2026-08-14
+
+- Fix/use flagrun by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/31
+
 ## [v0.0.18](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.17...v0.0.18) - 2026-08-12
 
 - update README.md by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/28
