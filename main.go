@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"time"
 
-	_ "github.com/jessevdk/go-flags" // for flag parsing
 	"github.com/mackerelio/golib/pluginutil"
 	"github.com/monitoring-forge/flagrun"
 	"github.com/monitoring-forge/saferio"
