@@ -16,7 +16,6 @@ import (
 )
 
 var version string
-var commit string
 
 type Opt struct {
 	Pid       int    `short:"p" long:"pid" description:"PID" required:"true"`
@@ -164,37 +163,43 @@ func cpuStatAt(p procfs.Proc, opt *Opt, now uint64, workDir string, root string)
 	return fmt.Sprintf("process-status.cpu_%s.percentage\t%f\t%d\n", opt.KeyPrefix, us, now), nil
 }
 
-func (opt *Opt) Run(_ []string) (string, int) {
+func (opt *Opt) Run(_ []string) (error, int) {
 
 	now := uint64(time.Now().Unix())
 
 	proc, err := procfs.NewProc(opt.Pid)
 	if err != nil {
-		return fmt.Sprintf("failed to fetch proc: %v", err), flagrun.CRITICAL
+		return errors.Wrap(err, "failed to fetch proc"), flagrun.CRITICAL
 	}
-
-	msg, err := opt.fdsStat(proc, now)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Notice: %v\n", err)
-	}
-	fmt.Print(msg)
-
 	workDir := pluginutil.PluginWorkDir()
-	msg, err = opt.cpuStat(proc, workDir, now)
+	msg, err := opt.cpuStat(proc, workDir, now)
 	if err != nil {
-		return fmt.Sprintf("failed to get cpu stat: %v", err), flagrun.CRITICAL
+		fmt.Fprintf(os.Stderr, "Notice: failed to get cpu stat: %v\n", err)
 	}
-	fmt.Print(msg)
+	if msg != "" {
+		fmt.Print(msg)
+	}
+
+	msg, err = opt.fdsStat(proc, now)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Notice: failed to get fds stat: %v\n", err)
+	}
+	if msg != "" {
+		fmt.Print(msg)
+	}
 
 	msg, err = opt.memStat(proc, now)
 	if err != nil {
-		return fmt.Sprintf("failed to get memory stat: %v", err), flagrun.CRITICAL
+		fmt.Fprintf(os.Stderr, "Notice: failed to get mem stat: %v\n", err)
+	}
+	if msg != "" {
+		fmt.Print(msg)
 	}
 
-	return msg, flagrun.OK
+	return nil, flagrun.OK
 }
 
 func main() {
 	opt := &Opt{}
-	os.Exit(flagrun.Go(opt, flagrun.Version(version), flagrun.Commit(commit)))
+	os.Exit(flagrun.Go(opt, flagrun.Version(version)))
 }

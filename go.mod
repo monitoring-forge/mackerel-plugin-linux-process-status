@@ -8,7 +8,9 @@ require (
 	github.com/prometheus/procfs v0.21.1
 )
 
-require github.com/monitoring-forge/flagrun v0.0.4
+require github.com/monitoring-forge/flagrun v0.0.6
+
+require github.com/mackerelio/checkers v0.2.1 // indirect
 
 require (
 	github.com/mackerelio/golib v1.2.2
