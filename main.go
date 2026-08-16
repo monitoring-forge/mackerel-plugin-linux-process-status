@@ -175,24 +175,21 @@ func (opt *Opt) Run(_ []string) (error, int) {
 	msg, err := opt.cpuStat(proc, workDir, now)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Notice: failed to get cpu stat: %v\n", err)
-	}
-	if msg != "" {
+	} else if msg != "" {
 		fmt.Print(msg)
 	}
 
 	msg, err = opt.fdsStat(proc, now)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Notice: failed to get fds stat: %v\n", err)
-	}
-	if msg != "" {
+	} else if msg != "" {
 		fmt.Print(msg)
 	}
 
 	msg, err = opt.memStat(proc, now)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Notice: failed to get mem stat: %v\n", err)
-	}
-	if msg != "" {
+	} else if msg != "" {
 		fmt.Print(msg)
 	}
 
