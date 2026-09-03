@@ -8,8 +8,8 @@ github.com/mackerelio/checkers v0.2.1 h1:vRXzAT+CEyaLjSrHVxKUBjyWq1kfo8QcI8ZoSKZ
 github.com/mackerelio/checkers v0.2.1/go.mod h1:CW3k/5bvHhxDrfKgWvMvNH0R51zco141ZVxlI7o/KAc=
 github.com/mackerelio/golib v1.2.2 h1:fQfW1o2KvPyIsAH/7+M2J0gpf2jLu+NyYpDCN79zxW4=
 github.com/mackerelio/golib v1.2.2/go.mod h1:itcSOfrsT5XvkzflFPebT43RrliaKDz2T6YGYt3jclw=
-github.com/monitoring-forge/flagrun v0.0.6 h1:DyQGzjv1cSa7RIRSulRf7CykbBHgunwl0twC4xy7bjI=
-github.com/monitoring-forge/flagrun v0.0.6/go.mod h1:yAwxGIEx81wU4JOMp6hz7SdSYWgT/Hr4JXEdHlEn1mw=
+github.com/monitoring-forge/flagrun v0.0.8 h1:CEoMMdFpZ4KOTiBy2mAUQtlgFsTqpvpEoLjzanDgEtw=
+github.com/monitoring-forge/flagrun v0.0.8/go.mod h1:yAwxGIEx81wU4JOMp6hz7SdSYWgT/Hr4JXEdHlEn1mw=
 github.com/monitoring-forge/saferio v0.0.2 h1:DJ4D4e7tBuMze4Ez7N7l7pGPAJ/oFsC0mwh+dg5UkwE=
 github.com/monitoring-forge/saferio v0.0.2/go.mod h1:N2nfAMrgYrax2CdwKIIWIjy5tIrlQFtJJWzKess30KY=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
