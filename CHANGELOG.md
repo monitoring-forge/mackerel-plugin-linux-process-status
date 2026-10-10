@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.21](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.20...v0.0.21) - 2026-10-10
+
+- Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/47
+
 ## [v0.0.20](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.19...v0.0.20) - 2026-10-02
 
 - Makefile and go.mod: update flagrun dependency to v0.0.6; refactor er… by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/33
