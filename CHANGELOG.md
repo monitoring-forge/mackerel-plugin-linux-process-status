@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.0.21](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.20...v0.0.21) - 2026-10-15
+
+- Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/47
+- ci: bump Songmu/tagpr from 1.21.0 to 1.21.2 in the tagpr group by @dependabot[bot] in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/50
+- go: bump golang.org/x/sys from 0.48.0 to 0.49.0 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/51
+
 ## [v0.0.20](https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/compare/v0.0.19...v0.0.20) - 2026-10-02
 
 - Makefile and go.mod: update flagrun dependency to v0.0.6; refactor er… by @kazeburo in https://github.com/monitoring-forge/mackerel-plugin-linux-process-status/pull/33
